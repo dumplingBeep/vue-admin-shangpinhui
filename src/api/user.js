@@ -1,24 +1,27 @@
-import request from '@/utils/request'
+import request from '@/utils/request';
 
+// POST /admin/acl/index/login
 export function login(data) {
   return request({
-    url: '/vue-admin-template/user/login',
+    url: '/admin/acl/index/login',
     method: 'post',
-    data
-  })
+    data,
+  });
 }
 
+// GET /admin/acl/index/info
 export function getInfo(token) {
   return request({
-    url: '/vue-admin-template/user/info',
+    url: '/admin/acl/index/info',
     method: 'get',
-    params: { token }
-  })
+    params: { token },
+  });
 }
 
+// POST /admin/acl/index/logout
 export function logout() {
   return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
-  })
+    url: '/admin/acl/index/logout',
+    method: 'post',
+  });
 }
