@@ -30,6 +30,7 @@
       @current-change="handleCurrentChange"
      -->
     <el-pagination
+      @current-change="handleCurrentChange"
       :current-page="currentPage"
       :page-sizes="[1, 2, 3, 4, 5]"
       :page-size="pageSize"
@@ -64,6 +65,16 @@ export default {
       this.trademarkList = res.data.records;
       this.total = res.data.total;
       console.log(res);
+    },
+
+    /**
+     * @msg: 分页器页码发送改变：更新当前页码的数据(发送请求)
+     * @param {*} page：分页器当前页码
+     */
+    handleCurrentChange(page) {
+      this.currentPage = page;
+      // 更新当前页码的数据
+      this.setTrademarkList();
     },
   },
 };
