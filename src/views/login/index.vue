@@ -71,15 +71,21 @@ export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'));
+      const username = value.trim();
+      if (!username) {
+        callback(new Error('宝儿,输入用户名'));
+      } else if (username.length < 5) {
+        callback(new Error('宝儿,用户名长度不能小于5位'));
       } else {
         callback();
       }
     };
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'));
+      const password = value.trim();
+      if (!password) {
+        callback(new Error('宝儿,输入密码'));
+      } else if (password.length < 6 || password.length > 16) {
+        callback(new Error('宝儿,密码长度在6-16位'));
       } else {
         callback();
       }
