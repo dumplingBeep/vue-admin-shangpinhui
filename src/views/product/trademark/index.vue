@@ -53,12 +53,18 @@ export default {
       trademarkList: [], // 品牌列表
     };
   },
-  async mounted() {
-    const { currentPage, pageSize } = this;
-    const res = await trademark.reqGetPageTrademarkList(currentPage, pageSize);
-    console.log(res);
-    this.trademarkList = res.data.records;
-    this.total = res.data.total;
+  mounted() {
+    this.setTrademarkList();
+  },
+  methods: {
+    // 获取指定页码条数的品牌数据，设置到data
+    async setTrademarkList() {
+      const { currentPage, pageSize } = this;
+      const res = await trademark.reqGetPageTrademarkList(currentPage, pageSize);
+      this.trademarkList = res.data.records;
+      this.total = res.data.total;
+      console.log(res);
+    },
   },
 };
 </script>
