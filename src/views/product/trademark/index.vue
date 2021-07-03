@@ -2,11 +2,27 @@
   <div class="trademark-wraper">
     <el-button type="primary" icon="el-icon-plus">添加</el-button>
 
-    <el-table border style="width: 100%; margin: 20px 0">
+    <el-table :data="trademarkList" border style="width: 100%; margin: 20px 0">
       <el-table-column type="index" label="序号" width="80" align="center"></el-table-column>
-      <el-table-column label="品牌名称"></el-table-column>
-      <el-table-column label="品牌LOGO"></el-table-column>
-      <el-table-column label="操作"></el-table-column>
+      <el-table-column prop="tmName" label="品牌名称"></el-table-column>
+      <el-table-column label="品牌LOGO">
+        <template slot-scope="scope">
+          <img
+            :src="scope.row.logoUrl"
+            :alt="scope.row.tmName"
+            style="width:100px; height:80px; min-width:100px; min-height:80px"
+          />
+        </template>
+      </el-table-column>
+
+      <el-table-column label="操作">
+        <template>
+          <el-button size="mini" icon="el-icon-edit" type="warning">编辑</el-button>
+          <el-button size="mini" icon="el-icon-delete" type="danger">
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <!-- 
@@ -15,7 +31,7 @@
      -->
     <el-pagination
       :current-page="currentPage"
-      :page-sizes="[10, 20, 50]"
+      :page-sizes="[1, 2, 3, 4, 5]"
       :page-size="pageSize"
       layout="prev, pager, next, jumper, -> , sizes, total"
       :total="total"
@@ -25,6 +41,8 @@
 </template>
 
 <script>
+import { trademark } from './../../../api';
+
 export default {
   name: 'TradeMark',
   data() {
@@ -32,7 +50,15 @@ export default {
       currentPage: 1, // 当前页码
       pageSize: 5, // 每页条数
       total: 20, // 总数
+      trademarkList: [], // 品牌列表
     };
+  },
+  async mounted() {
+    const { currentPage, pageSize } = this;
+    const res = await trademark.reqGetPageTrademarkList(currentPage, pageSize);
+    console.log(res);
+    this.trademarkList = res.data.records;
+    this.total = res.data.total;
   },
 };
 </script>
@@ -42,4 +68,3 @@ export default {
   padding-top: 20px;
 }
 </style>
->
