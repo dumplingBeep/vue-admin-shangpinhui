@@ -31,6 +31,7 @@
      -->
     <el-pagination
       @current-change="handleCurrentChange"
+      @size-change="handleSizeChange"
       :current-page="currentPage"
       :page-sizes="[1, 2, 3, 4, 5]"
       :page-size="pageSize"
@@ -64,7 +65,6 @@ export default {
       const res = await trademark.reqGetPageTrademarkList(currentPage, pageSize);
       this.trademarkList = res.data.records;
       this.total = res.data.total;
-      console.log(res);
     },
 
     /**
@@ -74,6 +74,16 @@ export default {
     handleCurrentChange(page) {
       this.currentPage = page;
       // 更新当前页码的数据
+      this.setTrademarkList();
+    },
+
+    /**
+     * @msg: 当每页条数发生改变：更新对应条数的数据(发生请求)
+     * @param {*} pageSize: 一页展示的条数
+     */
+    handleSizeChange(pageSize) {
+      this.pageSize = pageSize;
+      // 更新对应条数的数据
       this.setTrademarkList();
     },
   },
