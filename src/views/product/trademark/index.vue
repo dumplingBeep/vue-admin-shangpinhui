@@ -25,10 +25,6 @@
       </el-table-column>
     </el-table>
 
-    <!-- 
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-     -->
     <el-pagination
       @current-change="handleCurrentChange"
       @size-change="handleSizeChange"
