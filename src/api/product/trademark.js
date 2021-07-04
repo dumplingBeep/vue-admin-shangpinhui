@@ -15,4 +15,12 @@ export default {
       url: `/admin/product/baseTrademark/${page}/${limit}`,
     });
   },
+  // 请求添加品牌
+  reqAddTrademark(data) {
+    return request({
+      method: 'POST',
+      url: '/admin/product/baseTrademark/save',
+      data,
+    });
+  },
 };

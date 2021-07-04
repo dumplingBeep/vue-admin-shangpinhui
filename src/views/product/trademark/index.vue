@@ -1,7 +1,8 @@
 <template>
   <div class="trademark-wraper">
-    <el-button type="primary" icon="el-icon-plus">添加</el-button>
+    <el-button @click="addTrademark" type="primary" icon="el-icon-plus">添加</el-button>
 
+    <!-- 品牌列表 -->
     <el-table :data="trademarkList" border style="width: 100%; margin: 20px 0">
       <el-table-column type="index" label="序号" width="80" align="center"></el-table-column>
       <el-table-column prop="tmName" label="品牌名称"></el-table-column>
@@ -25,6 +26,39 @@
       </el-table-column>
     </el-table>
 
+    <!-- 添加/修改品牌对话框 -->
+    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%">
+      <el-form
+        :model="trademarkForm"
+        :rules="rules"
+        ref="trademarkForm"
+        label-width="100px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="品牌名称" prop="tmName">
+          <el-input v-model="trademarkForm.tmName"></el-input>
+        </el-form-item>
+        <el-form-item label="品牌Logo" prop="logoUrl">
+          <el-upload
+            class="avatar-uploader"
+            :on-success="handleAvatarSuccess"
+            action="/dev-api/admin/product/fileUpload"
+            :show-file-list="false"
+          >
+            <img v-if="trademarkForm.logoUrl" :src="trademarkForm.logoUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm('trademarkForm')">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 分页器 -->
     <el-pagination
       @current-change="handleCurrentChange"
       @size-change="handleSizeChange"
@@ -49,6 +83,21 @@ export default {
       pageSize: 5, // 每页条数
       total: 20, // 总数
       trademarkList: [], // 品牌列表
+      dialogVisible: false, // 对话框可见性
+      dialogTitle: '', // 对话框标题
+      // 品牌信息
+      trademarkForm: {
+        tmName: '',
+        logoUrl: '',
+      },
+      // 添加/修改品牌信息校验规则
+      rules: {
+        tmName: [
+          { required: true, message: '宝儿,输入品牌名称', trigger: 'blur' },
+          { min: 2, max: 5, message: '宝儿,长度在 2 到 5 个字符', trigger: 'blur' },
+        ],
+        logoUrl: [{ required: true, message: '宝儿,上传品牌Logo', trigger: 'blur' }],
+      },
     };
   },
   mounted() {
@@ -82,12 +131,64 @@ export default {
       // 更新对应条数的数据
       this.setTrademarkList();
     },
+
+    // 添加品牌点击事件：显示对话框
+    addTrademark() {
+      this.dialogTitle = '添加品牌';
+      this.dialogVisible = true;
+    },
+
+    // 上传头像成功：获取头像地址
+    handleAvatarSuccess(res, file) {
+      this.trademarkForm.logoUrl = URL.createObjectURL(file.raw);
+    },
+
+    /**
+     * @msg: 对话框确定按钮click事件:
+     *  表单校验，通过则添加品牌(发送请求)
+     * @param {*} formName: 校验的表单
+     */
+    submitForm(formName) {
+      this.$refs[formName].validate(async (valid) => {
+        if (valid) {
+          // 校验通过
+          // 添加品牌(发送请求)
+          await trademark.reqAddTrademark(this.trademarkForm);
+          // 隐藏会话框
+          this.dialogVisible = false;
+        }
+      });
+    },
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .trademark-wraper {
   padding-top: 20px;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>
