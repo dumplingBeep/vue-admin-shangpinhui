@@ -187,15 +187,46 @@ export default {
     },
 
     /**
-     * @msg: 点击编辑触发事件：
+     * @msg: 点击编辑触发事件：显示对话框
      * @param {*} row: 当前编辑品牌数据
      */
     handleEdit(row) {
-      console.log(row);
       // 展示对话框
       this.dialogTitle = '修改品牌';
       this.trademarkForm = row;
       this.dialogVisible = true;
+    },
+
+    /**
+     * @msg: 点击删除触发事件：
+     *  弹出确认框，确定则删除(发送请求)
+     * @param {*} row: 当前删除品牌的数据
+     */
+    handleDelete(row) {
+      // 确认框
+      this.$confirm(`此操作将永久删除${row.tmName}品牌, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(async () => {
+          // 确认
+          // 删除该品牌(发送请求)
+          await trademark.reqDeleteTrademark(row.id);
+          // 刷新数据
+          this.setTrademarkList();
+
+          this.$message({
+            type: 'success',
+            message: '删除成功!',
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          });
+        });
     },
   },
 };

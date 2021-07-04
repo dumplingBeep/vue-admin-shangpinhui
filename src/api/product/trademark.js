@@ -31,4 +31,11 @@ export default {
       data,
     });
   },
+  // 请求修改品牌
+  reqDeleteTrademark(id) {
+    return request({
+      method: 'DELETE',
+      url: `/admin/product/baseTrademark/remove/${id}`,
+    });
+  },
 };
