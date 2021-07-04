@@ -140,7 +140,7 @@ export default {
 
     // 上传头像成功：获取头像地址
     handleAvatarSuccess(res, file) {
-      this.trademarkForm.logoUrl = URL.createObjectURL(file.raw);
+      this.trademarkForm.logoUrl = file.response.data;
     },
 
     /**
@@ -152,10 +152,22 @@ export default {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
           // 校验通过
-          // 添加品牌(发送请求)
-          await trademark.reqAddTrademark(this.trademarkForm);
-          // 隐藏会话框
-          this.dialogVisible = false;
+          try {
+            // 添加品牌(发送请求)
+            await trademark.reqAddTrademark(this.trademarkForm);
+            // 隐藏会话框
+            this.dialogVisible = false;
+            // 提示消息框
+            this.$message({
+              message: '亲,添加成功',
+              type: 'success',
+            });
+          } catch (error) {
+            // 隐藏会话框
+            this.dialogVisible = false;
+            // 提示消息框
+            this.$message.error('亲,添加失败');
+          }
         }
       });
     },
