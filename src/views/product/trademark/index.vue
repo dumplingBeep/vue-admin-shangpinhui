@@ -17,9 +17,16 @@
       </el-table-column>
 
       <el-table-column label="操作">
-        <template>
-          <el-button size="mini" icon="el-icon-edit" type="warning">编辑</el-button>
-          <el-button size="mini" icon="el-icon-delete" type="danger">
+        <template slot-scope="scope">
+          <el-button @click="handleEdit(scope.row)" size="mini" icon="el-icon-edit" type="warning">
+            编辑
+          </el-button>
+          <el-button
+            @click="handleDelete(scope.row)"
+            size="mini"
+            icon="el-icon-delete"
+            type="danger"
+          >
             删除
           </el-button>
         </template>
@@ -153,23 +160,42 @@ export default {
         if (valid) {
           // 校验通过
           try {
-            // 添加品牌(发送请求)
-            await trademark.reqAddTrademark(this.trademarkForm);
+            if (this.dialogTitle === '添加品牌') {
+              // 添加品牌(发送请求)
+              await trademark.reqAddTrademark(this.trademarkForm);
+              // 更新当前页码的数据
+              this.setTrademarkList();
+            } else {
+              // 修改品牌(发送请求)
+              await trademark.reqUpdateTrademark(this.trademarkForm);
+            }
             // 隐藏会话框
             this.dialogVisible = false;
             // 提示消息框
             this.$message({
-              message: '亲,添加成功',
+              message: `亲,${this.dialogTitle}成功`,
               type: 'success',
             });
           } catch (error) {
             // 隐藏会话框
             this.dialogVisible = false;
             // 提示消息框
-            this.$message.error('亲,添加失败');
+            this.$message.error(`亲,${this.dialogTitle}失败!!!`);
           }
         }
       });
+    },
+
+    /**
+     * @msg: 点击编辑触发事件：
+     * @param {*} row: 当前编辑品牌数据
+     */
+    handleEdit(row) {
+      console.log(row);
+      // 展示对话框
+      this.dialogTitle = '修改品牌';
+      this.trademarkForm = row;
+      this.dialogVisible = true;
     },
   },
 };

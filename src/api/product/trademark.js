@@ -23,4 +23,12 @@ export default {
       data,
     });
   },
+  // 请求修改品牌
+  reqUpdateTrademark(data) {
+    return request({
+      method: 'PUT',
+      url: '/admin/product/baseTrademark/update',
+      data,
+    });
+  },
 };
