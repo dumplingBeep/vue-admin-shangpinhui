@@ -3,7 +3,7 @@
     <el-button @click="addTrademark" type="primary" icon="el-icon-plus">添加</el-button>
 
     <!-- 品牌列表 -->
-    <el-table :data="trademarkList" border style="width: 100%; margin: 20px 0">
+    <el-table v-loading="loading" :data="trademarkList" border style="width: 100%; margin: 20px 0">
       <el-table-column type="index" label="序号" width="80" align="center"></el-table-column>
       <el-table-column prop="tmName" label="品牌名称"></el-table-column>
       <el-table-column label="品牌LOGO">
@@ -86,6 +86,7 @@ export default {
   name: 'TradeMark',
   data() {
     return {
+      loading: false, // 加载状态
       currentPage: 1, // 当前页码
       pageSize: 5, // 每页条数
       total: 20, // 总数
@@ -113,8 +114,10 @@ export default {
   methods: {
     // 获取指定页码条数的品牌数据，设置到data
     async setTrademarkList() {
+      this.loading = true;
       const { currentPage, pageSize } = this;
       const res = await trademark.reqGetPageTrademarkList(currentPage, pageSize);
+      this.loading = false;
       this.trademarkList = res.data.records;
       this.total = res.data.total;
     },
