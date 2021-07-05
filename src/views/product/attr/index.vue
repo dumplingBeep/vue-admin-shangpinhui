@@ -2,7 +2,11 @@
   <div class="attr-wraper">
     <!-- 三级联动属性分类 -->
     <el-card shadow="always">
-      <CategorySelector />
+      <CategorySelector
+        :category1Id.sync="category1Id"
+        :category2Id.sync="category2Id"
+        :category3Id.sync="category3Id"
+      />
     </el-card>
 
     <!-- 属性列表 -->
