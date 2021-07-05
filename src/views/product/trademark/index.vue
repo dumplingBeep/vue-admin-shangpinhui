@@ -44,6 +44,7 @@
           <el-upload
             class="avatar-uploader"
             :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
             action="/dev-api/admin/product/fileUpload"
             :show-file-list="false"
           >
@@ -147,8 +148,22 @@ export default {
     },
 
     // 上传头像成功：获取头像地址
-    handleAvatarSuccess(res, file) {
-      this.trademarkForm.logoUrl = file.response.data;
+    handleAvatarSuccess({ data }) {
+      this.trademarkForm.logoUrl = data;
+    },
+    // 上传logo之前，限制图片类型、大小
+    beforeAvatarUpload(file) {
+      const types = ['image/jpeg', 'image/jpg', 'image/png'];
+      const isType = types.includes(file.type);
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isType) {
+        this.$message.error('上传头像图片只能是 JPG、JPEG、PNG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return isType && isLt2M;
     },
 
     /**
