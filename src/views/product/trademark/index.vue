@@ -7,26 +7,21 @@
       <el-table-column type="index" label="序号" width="80" align="center"></el-table-column>
       <el-table-column prop="tmName" label="品牌名称"></el-table-column>
       <el-table-column label="品牌LOGO">
-        <template slot-scope="scope">
+        <template slot-scope="{ row }">
           <img
-            :src="scope.row.logoUrl"
-            :alt="scope.row.tmName"
+            :src="row.logoUrl"
+            :alt="row.tmName"
             style="width:100px; height:80px; min-width:100px; min-height:80px"
           />
         </template>
       </el-table-column>
 
       <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button @click="handleEdit(scope.row)" size="mini" icon="el-icon-edit" type="warning">
+        <template slot-scope="{ row }">
+          <el-button @click="handleEdit(row)" size="mini" icon="el-icon-edit" type="warning">
             编辑
           </el-button>
-          <el-button
-            @click="handleDelete(scope.row)"
-            size="mini"
-            icon="el-icon-delete"
-            type="danger"
-          >
+          <el-button @click="handleDelete(row)" size="mini" icon="el-icon-delete" type="danger">
             删除
           </el-button>
         </template>
@@ -80,8 +75,6 @@
 </template>
 
 <script>
-import { trademark } from './../../../api';
-
 export default {
   name: 'TradeMark',
   data() {
@@ -115,11 +108,12 @@ export default {
     // 获取指定页码条数的品牌数据，设置到data
     async setTrademarkList() {
       this.loading = true;
-      const { currentPage, pageSize } = this;
-      const res = await trademark.reqGetPageTrademarkList(currentPage, pageSize);
+      const {
+        data: { records, total },
+      } = await this.$API.trademark.reqGetPageTrademarkList(this.currentPage, this.pageSize);
       this.loading = false;
-      this.trademarkList = res.data.records;
-      this.total = res.data.total;
+      this.trademarkList = records;
+      this.total = total;
     },
 
     /**
@@ -144,6 +138,10 @@ export default {
 
     // 添加品牌点击事件：显示对话框
     addTrademark() {
+      // 初始化状态
+      this.trademarkForm.id && delete this.trademarkForm.id;
+      this.trademarkForm.tmName = '';
+      this.trademarkForm.logoUrl = '';
       this.dialogTitle = '添加品牌';
       this.dialogVisible = true;
     },
@@ -155,7 +153,7 @@ export default {
 
     /**
      * @msg: 对话框确定按钮click事件:
-     *  表单校验，通过则添加品牌(发送请求)
+     *  表单校验，通过则添加/修改品牌(发送请求)
      * @param {*} formName: 校验的表单
      */
     submitForm(formName) {
@@ -163,15 +161,11 @@ export default {
         if (valid) {
           // 校验通过
           try {
-            if (this.dialogTitle === '添加品牌') {
-              // 添加品牌(发送请求)
-              await trademark.reqAddTrademark(this.trademarkForm);
-              // 更新当前页码的数据
-              this.setTrademarkList();
-            } else {
-              // 修改品牌(发送请求)
-              await trademark.reqUpdateTrademark(this.trademarkForm);
-            }
+            // 添加/修改品牌(发送请求)
+            await this.$API.trademark.reqAddOrUpdateTrademark(this.trademarkForm);
+
+            // 更新数据
+            this.setTrademarkList();
             // 隐藏会话框
             this.dialogVisible = false;
             // 提示消息框
@@ -196,7 +190,7 @@ export default {
     handleEdit(row) {
       // 展示对话框
       this.dialogTitle = '修改品牌';
-      this.trademarkForm = row;
+      this.trademarkForm = { ...row };
       this.dialogVisible = true;
     },
 
@@ -215,7 +209,7 @@ export default {
         .then(async () => {
           // 确认
           // 删除该品牌(发送请求)
-          await trademark.reqDeleteTrademark(row.id);
+          await this.$API.trademark.reqDeleteTrademark(row.id);
           // 刷新数据
           this.setTrademarkList();
 
@@ -238,29 +232,33 @@ export default {
 <style lang="scss">
 .trademark-wraper {
   padding-top: 20px;
-}
 
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+
+  .el-dialog {
+    min-width: 500px;
+  }
 }
 </style>
