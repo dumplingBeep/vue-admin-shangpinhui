@@ -81,7 +81,14 @@
             </template>
           </el-table-column>
           <el-table-column label="操作" width="150">
-            <TipButton tipText="删除" icon="el-icon-delete" type="danger" />
+            <template slot-scope="{ row }">
+              <el-popconfirm
+                :title="`确定删除属性值&quot;${row.valueName}&quot;吗?`"
+                @onConfirm="deleteAttrValue(row.id)"
+              >
+                <TipButton slot="reference" tipText="删除" icon="el-icon-delete" type="danger" />
+              </el-popconfirm>
+            </template>
           </el-table-column>
         </el-table>
 
@@ -226,6 +233,14 @@ export default {
       this.isShowAttrList = false;
       // 取消禁用添加按钮
       this.isDisabledAddBtn = false;
+    },
+
+    // 删除属性值
+    deleteAttrValue(id) {
+      // 过滤掉删除选中的数据
+      this.attrForm.attrValueList = this.attrForm.attrValueList.filter(
+        (attrValue) => attrValue.id !== id
+      );
     },
   },
   watch: {
