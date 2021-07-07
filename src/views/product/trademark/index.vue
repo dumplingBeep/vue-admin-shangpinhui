@@ -57,7 +57,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitForm('trademarkForm')">确 定</el-button>
+        <el-button type="primary" @click="submitForm">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -96,7 +96,7 @@ export default {
       rules: {
         tmName: [
           { required: true, message: '宝儿,输入品牌名称', trigger: 'blur' },
-          { min: 2, max: 5, message: '宝儿,长度在 2 到 5 个字符', trigger: 'blur' },
+          { min: 2, max: 10, message: '宝儿,长度在 2 到 10 个字符', trigger: 'blur' },
         ],
         logoUrl: [{ required: true, message: '宝儿,上传品牌Logo', trigger: 'blur' }],
       },
@@ -171,8 +171,8 @@ export default {
      *  表单校验，通过则添加/修改品牌(发送请求)
      * @param {*} formName: 校验的表单
      */
-    submitForm(formName) {
-      this.$refs[formName].validate(async (valid) => {
+    submitForm() {
+      this.$refs.trademarkForm.validate(async (valid) => {
         if (valid) {
           // 校验通过
           try {
@@ -225,6 +225,12 @@ export default {
           // 确认
           // 删除该品牌(发送请求)
           await this.$API.trademark.reqDeleteTrademark(row.id);
+
+          // 删除的数据是当前页最后一条，则展示上一页
+          if (this.trademarkList.length === 1) {
+            this.currentPage -= 1;
+          }
+
           // 刷新数据
           this.setTrademarkList();
 

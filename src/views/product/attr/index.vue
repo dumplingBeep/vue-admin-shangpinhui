@@ -12,17 +12,24 @@
     <!-- 属性列表 -->
     <el-card shadow="always" style="margin-top:20px">
       <el-button :disabled="!category3Id" type="primary" icon="el-icon-plus">添加属性</el-button>
-      <el-table border :data="attrList" style="width: 100%; margin-top:20px">
+      <el-table v-loading="loading" border :data="attrList" style="width: 100%; margin-top:20px">
         <el-table-column type="index" label="序号" width="80" align="center"></el-table-column>
-        <el-table-column prop="attrName" label="属性名称"></el-table-column>
-        <el-table-column prop="attrValueList" label="属性值列表">
+        <el-table-column prop="attrName" label="属性名称" width="150"></el-table-column>
+        <el-table-column label="属性值列表">
           <template slot-scope="{ row }">
             <el-tag v-for="attrValue in row.attrValueList" :key="attrValue.id" type="info">
               {{ attrValue.valueName }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="address" label="操作" width="180"></el-table-column>
+        <el-table-column label="操作" width="180">
+          <el-tooltip content="编辑" placement="top">
+            <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+          </el-tooltip>
+          <el-tooltip content="删除" placement="top">
+            <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+          </el-tooltip>
+        </el-table-column>
       </el-table>
     </el-card>
   </div>
@@ -38,10 +45,11 @@ export default {
   },
   data() {
     return {
-      category1Id: '',
-      category2Id: '',
-      category3Id: '',
-      attrList: [],
+      loading: false, // loading状态
+      category1Id: '', //一级分类Id
+      category2Id: '', //二级分类Id
+      category3Id: '', //三级分类Id
+      attrList: [], // 属性列表
     };
   },
   watch: {
@@ -52,6 +60,7 @@ export default {
         return;
       }
 
+      this.loading = true;
       // 获取属性列表(发送请求)
       const { data } = await this.$API.attr.reqGetAttrInfoList(
         this.category1Id,
@@ -59,6 +68,7 @@ export default {
         this.category3Id
       );
       this.attrList = data;
+      this.loading = false;
     },
   },
 };
