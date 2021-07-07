@@ -13,12 +13,7 @@
     <el-card shadow="always" style="margin-top:20px">
       <!-- 属性列表 -->
       <div v-show="isShowAttrList">
-        <el-button
-          :disabled="!category3Id"
-          type="primary"
-          icon="el-icon-plus"
-          @click="isShowAttrList = false"
-        >
+        <el-button :disabled="!category3Id" type="primary" icon="el-icon-plus" @click="addAttr">
           添加属性
         </el-button>
         <el-table v-loading="loading" border :data="attrList" style="width: 100%; margin-top:20px">
@@ -32,8 +27,10 @@
             </template>
           </el-table-column>
           <el-table-column label="操作" width="180">
-            <TipButton tipText="编辑" icon="el-icon-edit" type="primary" />
-            <TipButton tipText="删除" icon="el-icon-delete" type="danger" />
+            <template slot-scope="{ row }">
+              <TipButton @click="editAttr(row)" tipText="编辑" icon="el-icon-edit" type="primary" />
+              <TipButton tipText="删除" icon="el-icon-delete" type="danger" />
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -68,18 +65,18 @@
             <template slot-scope="{ $index, row }">
               <el-input
                 :ref="$index"
-                v-show="!row.attrValue || row.isEdit"
-                v-model="row.attrValue"
+                v-show="!row.valueName || row.isEdit"
+                v-model="row.valueName"
                 @blur="row.isEdit = false"
                 size="mini"
                 placeholder="请输入属性值名称"
               ></el-input>
               <span
-                v-show="!!row.attrValue && !row.isEdit"
+                v-show="!!row.valueName && !row.isEdit"
                 @click="editAttrValue($index, row)"
                 style="display: block;height: 23px"
               >
-                {{ row.attrValue }}
+                {{ row.valueName }}
               </span>
             </template>
           </el-table-column>
@@ -88,7 +85,7 @@
           </el-table-column>
         </el-table>
 
-        <el-button :disabled="!attrForm.attrValueList.length" type="primary">
+        <el-button @click="save" :disabled="!attrForm.attrValueList.length" type="primary">
           保存
         </el-button>
         <el-button @click="isShowAttrList = true">取消</el-button>
@@ -112,6 +109,8 @@ export default {
       attrForm: {
         attrName: '',
         attrValueList: [],
+        categoryId: '',
+        categoryLevel: 3,
       },
       // 属性信息校验规则
       attrFormRules: {
@@ -127,8 +126,9 @@ export default {
     // 添加属性
     addAttrName() {
       this.attrForm.attrValueList.push({
-        attrValue: '',
+        valueName: '',
         isEdit: true,
+        attrId: 0,
       });
 
       // DOM更新后，最后一行(新增行) input 框获得焦点
@@ -146,15 +146,48 @@ export default {
       // DOM更新后，当前行 input 框获得焦点
       this.$nextTick(() => this.$refs[index].focus());
     },
-  },
-  watch: {
-    async category3Id(newVal) {
-      // 判断category3Id 是否有值，没有则清空 attrList，并退出
-      if (!newVal) {
-        this.attrList = [];
+
+    // 保存: 添加/修改属性
+    async save() {
+      const { attrForm } = this;
+
+      // 查找是否有空属性值
+      const isEmpty = attrForm.attrValueList.find((attrValue) => !attrValue.valueName.trim());
+      if (isEmpty) {
+        // 有则提示，并退出函数
+        this.$message({
+          message: '亲,属性值不能为空',
+          type: 'warning',
+        });
         return;
       }
 
+      // 删除多余属性 isEdit
+      attrForm.attrValueList.forEach((attrValue) => delete attrValue.isEdit);
+
+      try {
+        // 请求添加/修改属性
+        await this.$API.attr.reqAddOrUpdateAttr({
+          ...attrForm,
+        });
+
+        // 刷新属性列表
+        this.setAttrInfoList();
+        // 展示属性列表
+        this.isShowAttrList = true;
+
+        // 提示框
+        this.$message({
+          type: 'success',
+          message: '亲,保存成功',
+        });
+      } catch (error) {
+        this.$message.error('亲,保存失败');
+      }
+    },
+
+    // 获取设置属性列表
+    async setAttrInfoList() {
       this.loading = true;
       // 获取属性列表(发送请求)
       const { data } = await this.$API.attr.reqGetAttrInfoList(
@@ -164,6 +197,47 @@ export default {
       );
       this.attrList = data;
       this.loading = false;
+    },
+
+    // 添加属性
+    addAttr() {
+      // 展示添加控件
+      this.isShowAttrList = false;
+      // 禁用添加按钮
+      this.isDisabledAddBtn = true;
+
+      // 初始化值
+      // 有id则删除
+      this.attrForm.id && delete this.attrForm.id;
+      this.attrForm.attrName = '';
+      this.attrForm.categoryId = this.category3Id;
+      this.attrForm.attrValueList = [];
+    },
+
+    // 编辑属性
+    editAttr(row) {
+      // 防止数据污染
+      this.attrForm = { ...row };
+      this.attrForm.attrValueList = row.attrValueList.map(
+        (attrValue) => (attrValue.isEdit = false) || { ...attrValue }
+      );
+
+      // 显示修改组件
+      this.isShowAttrList = false;
+      // 取消禁用添加按钮
+      this.isDisabledAddBtn = false;
+    },
+  },
+  watch: {
+    async category3Id(newVal) {
+      // 判断category3Id 是否有值，没有则清空 attrList，并退出
+      if (!newVal) {
+        this.attrList = [];
+        return;
+      }
+
+      // 刷新属性列表
+      this.setAttrInfoList();
     },
   },
 };

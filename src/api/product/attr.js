@@ -8,4 +8,13 @@ export default {
       url: `/admin/product/attrInfoList/${category1Id}/${category2Id}/${category3Id}`,
     });
   },
+
+  // 添加/修改属性
+  reqAddOrUpdateAttr(data) {
+    return request({
+      method: 'POST',
+      url: '/admin/product/saveAttrInfo',
+      data,
+    });
+  },
 };
