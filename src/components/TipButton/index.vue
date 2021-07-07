@@ -1,6 +1,6 @@
 <template>
   <el-tooltip :content="tipText" placement="top">
-    <el-button v-bind="$attrs" size="mini"></el-button>
+    <el-button v-bind="$attrs" v-on="$listeners" size="mini"></el-button>
   </el-tooltip>
 </template>
 
