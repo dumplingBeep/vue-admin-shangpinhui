@@ -13,6 +13,7 @@ import store from './store';
 import router from './router';
 import * as api from './api';
 import CategorySelector from '@/components/CategorySelector';
+import TipButton from '@/components/TipButton';
 
 import '@/icons'; // icon
 import '@/permission'; // permission control
@@ -39,6 +40,7 @@ Vue.prototype.$API = api;
 
 // 注册全局组件
 Vue.component('CategorySelector', CategorySelector);
+Vue.component('TipButton', TipButton);
 
 Vue.config.productionTip = false;
 

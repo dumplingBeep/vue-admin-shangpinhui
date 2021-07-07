@@ -32,12 +32,8 @@
             </template>
           </el-table-column>
           <el-table-column label="操作" width="180">
-            <el-tooltip content="编辑" placement="top">
-              <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
-            </el-tooltip>
-            <el-tooltip content="删除" placement="top">
-              <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
-            </el-tooltip>
+            <TipButton tipText="编辑" icon="el-icon-edit" type="primary" />
+            <TipButton tipText="删除" icon="el-icon-delete" type="danger" />
           </el-table-column>
         </el-table>
       </div>
@@ -86,12 +82,9 @@
                 {{ row.attrValue }}
               </span>
             </template>
-            <el-input placeholder=""></el-input>
           </el-table-column>
           <el-table-column label="操作" width="150">
-            <el-tooltip content="删除" placement="top">
-              <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
-            </el-tooltip>
+            <TipButton tipText="删除" icon="el-icon-delete" type="danger" />
           </el-table-column>
         </el-table>
 
@@ -105,13 +98,8 @@
 </template>
 
 <script>
-// import CategorySelector from '@/components/CategorySelector';
-
 export default {
   name: 'Attr',
-  // components: {
-  //   CategorySelector,
-  // },
   data() {
     return {
       loading: false, // loading状态
