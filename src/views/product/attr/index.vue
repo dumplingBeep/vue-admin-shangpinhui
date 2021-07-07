@@ -105,13 +105,13 @@
 </template>
 
 <script>
-import CategorySelector from '@/components/CategorySelector';
+// import CategorySelector from '@/components/CategorySelector';
 
 export default {
   name: 'Attr',
-  components: {
-    CategorySelector,
-  },
+  // components: {
+  //   CategorySelector,
+  // },
   data() {
     return {
       loading: false, // loading状态
