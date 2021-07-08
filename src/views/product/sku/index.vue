@@ -11,7 +11,13 @@
             <img :src="row.skuDefaultImg" alt="row.skuName" style="height: 80px; width: 100px" />
           </template>
         </el-table-column>
-        <el-table-column prop="weight" type="name" label="质量(KG)"></el-table-column>
+        <el-table-column
+          prop="weight"
+          type="name"
+          label="质量(KG)"
+          width="80"
+          align="center"
+        ></el-table-column>
         <el-table-column
           prop="price"
           type="name"
@@ -28,11 +34,9 @@
       </el-table>
 
       <!-- 分页器 -->
-      <!-- 
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-       -->
       <el-pagination
+        @current-change="handleCurrentChange"
+        @size-change="handleSizeChange"
         :current-page="currentPage"
         :page-sizes="[5, 10, 20, 50]"
         :page-size="pageSize"
@@ -71,6 +75,26 @@ export default {
       this.loading = false;
       this.productList = records;
       this.total = total;
+    },
+
+    /**
+     * @msg: 页数改变触发：展示对应产品数据(发送请求)
+     * @param {*} currentPage: 当前点击页
+     */
+    handleCurrentChange(currentPage) {
+      this.currentPage = currentPage;
+      // 展示对应页产品数据(发送请求)
+      this.setProductList();
+    },
+
+    /**
+     * @msg: 每页条数改变触发：展示对应产品数据(发送请求)
+     * @param {*} pageSize: 每页展示条数
+     */
+    handleSizeChange(pageSize) {
+      this.pageSize = pageSize;
+      // 展示对应条数产品数据(发送请求)
+      this.setProductList();
     },
   },
 };
