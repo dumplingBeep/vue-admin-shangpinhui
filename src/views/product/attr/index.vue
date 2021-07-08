@@ -6,6 +6,7 @@
         :category1Id.sync="category1Id"
         :category2Id.sync="category2Id"
         :category3Id.sync="category3Id"
+        :isShowList="!isShowAttrList"
       />
     </el-card>
 
@@ -161,17 +162,6 @@ export default {
     // 保存: 添加/修改属性
     async save() {
       const { attrForm } = this;
-
-      // 查找是否有空属性值
-      // const isEmpty = attrForm.attrValueList.some((attrValue) => !attrValue.valueName.trim());
-      // if (isEmpty) {
-      //   // 有则提示，并退出函数
-      //   this.$message({
-      //     message: '亲,属性值不能为空',
-      //     type: 'warning',
-      //   });
-      //   return;
-      // }
 
       const isEdit = attrForm.attrValueList.some((attrValue) => attrValue.isEdit);
       if (isEdit) {
