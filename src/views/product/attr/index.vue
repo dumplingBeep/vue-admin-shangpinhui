@@ -29,7 +29,12 @@
           <el-table-column label="操作" width="180">
             <template slot-scope="{ row }">
               <TipButton @click="editAttr(row)" tipText="编辑" icon="el-icon-edit" type="primary" />
-              <TipButton tipText="删除" icon="el-icon-delete" type="danger" />
+              <TipButton
+                @click="deleteAttr(row)"
+                tipText="删除"
+                icon="el-icon-delete"
+                type="danger"
+              />
             </template>
           </el-table-column>
         </el-table>
@@ -135,7 +140,6 @@ export default {
       this.attrForm.attrValueList.push({
         valueName: '',
         isEdit: true,
-        attrId: 0,
       });
 
       // DOM更新后，最后一行(新增行) input 框获得焦点
@@ -241,6 +245,33 @@ export default {
       this.attrForm.attrValueList = this.attrForm.attrValueList.filter(
         (attrValue) => attrValue.id !== id
       );
+    },
+
+    // 删除属性
+    deleteAttr(row) {
+      this.$confirm(`此操作将永久删除"${row.attrName}"属性, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(async () => {
+          // 确定
+          // 删除属性(发送请求)
+          await this.$API.attr.reqDeleteAttr(row.id);
+          // 更新数据
+          this.setAttrInfoList();
+
+          this.$message({
+            type: 'success',
+            message: '删除成功!',
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          });
+        });
     },
   },
   watch: {

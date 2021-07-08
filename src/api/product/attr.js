@@ -17,4 +17,12 @@ export default {
       data,
     });
   },
+
+  // 删除属性
+  reqDeleteAttr(attrId) {
+    return request({
+      method: 'DELETE',
+      url: `/admin/product/deleteAttr/${attrId}`,
+    });
+  },
 };
