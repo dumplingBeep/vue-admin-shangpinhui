@@ -26,10 +26,22 @@
           align="center"
         ></el-table-column>
         <el-table-column prop="skuName" type="name" label="操作" align="center" width="260">
-          <TipButton tipText="下架" icon="el-icon-bottom  " type="warning" />
-          <TipButton tipText="修改" icon="el-icon-edit" type="primary" />
-          <TipButton tipText="查看详情" icon="el-icon-info" type="info" />
-          <TipButton tipText="删除" icon="el-icon-delete" type="danger" />
+          <template slot-scope="{ row }">
+            <TipButton
+              :tipText="row.isSale ? '下架' : '上架'"
+              @click="setIsOnSale(row.id, row.isSale)"
+              :icon="row.isSale ? 'el-icon-bottom' : 'el-icon-top'"
+              :type="row.isSale ? 'warning' : 'info'"
+            />
+            <TipButton
+              tipText="修改"
+              @click="$message('宝儿,功能开发中~~~')"
+              icon="el-icon-edit"
+              type="primary"
+            />
+            <TipButton tipText="查看详情" icon="el-icon-info" type="info" />
+            <TipButton tipText="删除" icon="el-icon-delete" type="danger" />
+          </template>
         </el-table-column>
       </el-table>
 
@@ -95,6 +107,38 @@ export default {
       this.pageSize = pageSize;
       // 展示对应条数产品数据(发送请求)
       this.setProductList();
+    },
+
+    /**
+     * @msg: 点击按钮 下架/上架商品
+     * @param {*} id: 商品id
+     * @param {*} isSale: 商品是否上架(1)
+     */
+    async setIsOnSale(id, isSale) {
+      try {
+        // 判断
+        if (isSale) {
+          // 下架产品(发送请求)
+          await this.$API.sku.reqCancelSaleProduct(id);
+
+          // 更新页面
+          this.setProductList();
+        } else {
+          // 上架产品(发送请求)
+          await this.$API.sku.reqOnSaleProduct(id);
+
+          // 更新页面
+          this.setProductList();
+        }
+
+        // 提示框
+        this.$message({
+          type: 'success',
+          message: `亲,${isSale ? '下架' : '上架'}成功`,
+        });
+      } catch (error) {
+        this.$message.error(`亲,${isSale ? '下架' : '上架'}失败`);
+      }
     },
   },
 };

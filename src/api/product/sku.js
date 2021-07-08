@@ -8,4 +8,20 @@ export default {
       url: `/admin/product/list/${page}/${limit}`,
     });
   },
+
+  // 上架商品
+  reqOnSaleProduct(skuId) {
+    return request({
+      method: 'GET',
+      url: `/admin/product/onSale/${skuId}`,
+    });
+  },
+
+  // 下架商品
+  reqCancelSaleProduct(skuId) {
+    return request({
+      method: 'GET',
+      url: `/admin/product/cancelSale/${skuId}`,
+    });
+  },
 };
