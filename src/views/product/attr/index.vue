@@ -70,26 +70,22 @@
             <template slot-scope="{ $index, row }">
               <el-input
                 :ref="$index"
-                v-show="!row.valueName || row.isEdit"
+                v-if="row.isEdit"
                 v-model="row.valueName"
-                @blur="row.isEdit = false"
+                @blur="handleBlur(row)"
                 size="mini"
                 placeholder="请输入属性值名称"
               ></el-input>
-              <span
-                v-show="!!row.valueName && !row.isEdit"
-                @click="editAttrValue($index, row)"
-                style="display: block;height: 23px"
-              >
+              <span v-else @click="editAttrValue($index, row)" style="display: block;height: 23px">
                 {{ row.valueName }}
               </span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="150">
-            <template slot-scope="{ row }">
+            <template slot-scope="{ $index, row: { valueName } }">
               <el-popconfirm
-                :title="`确定删除属性值&quot;${row.valueName}&quot;吗?`"
-                @onConfirm="deleteAttrValue(row.id)"
+                :title="`确定删除属性值&quot;${valueName}&quot;吗?`"
+                @onConfirm="attrForm.attrValueList.splice($index, 1)"
               >
                 <TipButton slot="reference" tipText="删除" icon="el-icon-delete" type="danger" />
               </el-popconfirm>
@@ -97,7 +93,11 @@
           </el-table-column>
         </el-table>
 
-        <el-button @click="save" :disabled="!attrForm.attrValueList.length" type="primary">
+        <el-button
+          @click="save"
+          :disabled="isDisabledAddBtn || !attrForm.attrValueList.length"
+          type="primary"
+        >
           保存
         </el-button>
         <el-button @click="isShowAttrList = true">取消</el-button>
@@ -163,11 +163,21 @@ export default {
       const { attrForm } = this;
 
       // 查找是否有空属性值
-      const isEmpty = attrForm.attrValueList.find((attrValue) => !attrValue.valueName.trim());
-      if (isEmpty) {
+      // const isEmpty = attrForm.attrValueList.some((attrValue) => !attrValue.valueName.trim());
+      // if (isEmpty) {
+      //   // 有则提示，并退出函数
+      //   this.$message({
+      //     message: '亲,属性值不能为空',
+      //     type: 'warning',
+      //   });
+      //   return;
+      // }
+
+      const isEdit = attrForm.attrValueList.some((attrValue) => attrValue.isEdit);
+      if (isEdit) {
         // 有则提示，并退出函数
         this.$message({
-          message: '亲,属性值不能为空',
+          message: '亲,有正在编辑的值喔',
           type: 'warning',
         });
         return;
@@ -239,14 +249,6 @@ export default {
       this.isDisabledAddBtn = false;
     },
 
-    // 删除属性值
-    deleteAttrValue(id) {
-      // 过滤掉删除选中的数据
-      this.attrForm.attrValueList = this.attrForm.attrValueList.filter(
-        (attrValue) => attrValue.id !== id
-      );
-    },
-
     // 删除属性
     deleteAttr(row) {
       this.$confirm(`此操作将永久删除"${row.attrName}"属性, 是否继续?`, '提示', {
@@ -272,6 +274,32 @@ export default {
             message: '已取消删除',
           });
         });
+    },
+
+    /**
+     * @msg: 属性值输入框失去焦点事件：校验是否存在相同属性值
+     *  是则保留input框状态
+     * @param {*} row：当前属性值数据
+     */
+    handleBlur(row) {
+      // 校验是否存在相同属性值
+      let isEdit = this.attrForm.attrValueList.some((attrValue) => {
+        if (row !== attrValue) {
+          return attrValue.valueName === row.valueName;
+        }
+      });
+
+      if (isEdit) {
+        this.$message('亲,不可存在相同属性值');
+      }
+
+      // 去除首尾空格
+      row.valueName = row.valueName.trim();
+      // 属性值为空，则保持编辑状态
+      if (!row.valueName) {
+        isEdit = true;
+      }
+      row.isEdit = isEdit;
     },
   },
   watch: {
