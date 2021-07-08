@@ -1,7 +1,12 @@
 <template>
   <div class="cascade-wraper">
     <span class="cascade-title">一级分类</span>
-    <el-select v-model="category1Id" placeholder="请选择" @change="category1Change">
+    <el-select
+      v-model="category1Id"
+      placeholder="请选择"
+      @change="category1Change"
+      :disabled="isShowList"
+    >
       <el-option
         v-for="category in category1List"
         :key="category.id"
@@ -10,7 +15,12 @@
       ></el-option>
     </el-select>
     <span class="cascade-title">二级分类</span>
-    <el-select v-model="category2Id" placeholder="请选择" @change="category2Change">
+    <el-select
+      v-model="category2Id"
+      placeholder="请选择"
+      @change="category2Change"
+      :disabled="isShowList"
+    >
       <el-option
         v-for="category in category2List"
         :key="category.id"
@@ -19,7 +29,7 @@
       ></el-option>
     </el-select>
     <span class="cascade-title">三级分类</span>
-    <el-select v-model="category3Id" placeholder="请选择">
+    <el-select v-model="category3Id" placeholder="请选择" :disabled="isShowList">
       <el-option
         v-for="category in category3List"
         :key="category.id"
@@ -33,6 +43,12 @@
 <script>
 export default {
   name: 'CategorySelector',
+  props: {
+    isShowList: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       category1Id: '',
