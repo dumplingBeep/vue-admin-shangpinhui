@@ -10,8 +10,15 @@
       />
     </el-card>
 
-    <el-card style="margin-top: 20px">
-      <el-button type="primary" icon="el-icon-plus">添加SPU</el-button>
+    <el-card v-show="isShowSpuList" style="margin-top: 20px">
+      <el-button
+        :disabled="!category3Id"
+        @click="isShowSpuList = false"
+        type="primary"
+        icon="el-icon-plus"
+      >
+        添加SPU
+      </el-button>
 
       <!-- 数据表格 -->
       <el-table v-loading="loading" border :data="spuList" style="width: 100%; margin:20px 0">
@@ -38,12 +45,21 @@
         style="text-align:center"
       ></el-pagination>
     </el-card>
+
+    <el-card v-show="!isShowSpuList" style="margin-top: 20px">
+      <SpuForm />
+    </el-card>
   </div>
 </template>
 
 <script>
+import SpuForm from './../components/SpuForm';
+
 export default {
   name: 'SPU',
+  components: {
+    SpuForm,
+  },
   data() {
     return {
       loading: false, // loading状态
@@ -56,7 +72,7 @@ export default {
       category1Id: '',
       category2Id: '',
       category3Id: '',
-      isShowSpuList: true, // 是否展示Spu列表
+      isShowSpuList: false, // 是否展示Spu列表
       spuList: [], // SPU数据列表
     };
   },
@@ -100,8 +116,11 @@ export default {
   },
   watch: {
     category3Id(newVal) {
-      // 没有值则退出
-      if (!newVal) return;
+      // 没有值则退出, 清空spuList
+      if (!newVal) {
+        this.spuList = [];
+        return;
+      }
 
       // 有值则获取 spuList (发送请求)
       this.setSpuList();

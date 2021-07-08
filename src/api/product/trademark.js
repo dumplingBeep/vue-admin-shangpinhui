@@ -31,4 +31,12 @@ export default {
       url: `/admin/product/baseTrademark/remove/${id}`,
     });
   },
+
+  // 获得品牌列表
+  reqGetTrademarkList() {
+    return request({
+      method: 'GET',
+      url: '/admin/product/baseTrademark/getTrademarkList',
+    });
+  },
 };
