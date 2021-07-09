@@ -109,7 +109,7 @@ export default {
   name: 'SpuForm',
   props: {
     category3Id: [String, Number],
-    isShowSpuList: Boolean,
+    isShowSpuForm: Boolean,
   },
   data() {
     return {
@@ -285,7 +285,7 @@ export default {
         });
 
         // 保存成功展示 SpuList
-        this.$emit('update:isShowSpuList', true);
+        this.$emit('update:isShowSpuForm', false);
 
         // 更新父组件 spuList
         this.$emit('setSpuList');
@@ -300,7 +300,7 @@ export default {
     // 取消
     cancel() {
       // 展示 SpuList
-      this.$emit('update:isShowSpuList', true);
+      this.$emit('update:isShowSpuForm', false);
 
       // 重置数据
       Object.assign(this.$data, this.$options.data());

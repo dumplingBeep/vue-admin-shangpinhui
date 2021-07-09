@@ -43,24 +43,30 @@
       ></el-pagination>
     </el-card>
 
-    <el-card v-show="!isShowSpuList" style="margin-top: 20px">
+    <el-card v-show="isShowSpuForm" style="margin-top: 20px">
       <SpuForm
         :category3Id="category3Id"
-        :isShowSpuList.sync="isShowSpuList"
+        :isShowSpuForm.sync="isShowSpuForm"
         @setSpuList="setSpuList"
         ref="spuForm"
       />
+    </el-card>
+
+    <el-card v-show="isShowSkuForm" style="margin-top: 20px">
+      <SkuForm :isShowSkuForm.sync="isShowSkuForm" />
     </el-card>
   </div>
 </template>
 
 <script>
 import SpuForm from './../components/SpuForm';
+import SkuForm from './../components/SkuForm';
 
 export default {
   name: 'SPU',
   components: {
     SpuForm,
+    SkuForm,
   },
   data() {
     return {
@@ -74,8 +80,10 @@ export default {
       category1Id: '',
       category2Id: '',
       category3Id: '',
-      isShowSpuList: true, // 是否展示Spu列表
       spuList: [], // SPU数据列表
+      // isShowSpuList: true, // 是否展示Spu列表
+      isShowSkuForm: false,
+      isShowSpuForm: false,
     };
   },
   methods: {
@@ -118,7 +126,7 @@ export default {
 
     // 显示 SpuForm 组件
     showSpuForm() {
-      this.isShowSpuList = false;
+      this.isShowSpuForm = true;
 
       // category3Id
       this.$refs.spuForm.spuForm.category3Id = this.category3Id;
@@ -127,8 +135,13 @@ export default {
     },
 
     updateSpu(row) {
-      this.isShowSpuList = false;
+      this.isShowSpuForm = true;
       this.$refs.spuForm.initUpdateSpuForm(row.id);
+    },
+  },
+  computed: {
+    isShowSpuList() {
+      return !this.isShowSkuForm && !this.isShowSpuForm;
     },
   },
   watch: {
