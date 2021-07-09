@@ -29,4 +29,9 @@ export default {
   getBaseSaleAttrList() {
     return request.get(`/admin/product/baseSaleAttrList`);
   },
+
+  // GET /admin/product/spuImageList/{spuId}
+  getSpuImageList(spuId) {
+    return request.get(`/admin/product/spuImageList/${spuId}`);
+  },
 };

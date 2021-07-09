@@ -11,12 +11,7 @@
     </el-card>
 
     <el-card v-show="isShowSpuList" style="margin-top: 20px">
-      <el-button
-        :disabled="!category3Id"
-        @click="isShowSpuList = false"
-        type="primary"
-        icon="el-icon-plus"
-      >
+      <el-button :disabled="!category3Id" @click="showSpuForm" type="primary" icon="el-icon-plus">
         添加SPU
       </el-button>
 
@@ -26,10 +21,12 @@
         <el-table-column prop="spuName" label="SPU名称"></el-table-column>
         <el-table-column prop="description" label="SPU描述"></el-table-column>
         <el-table-column prop="name" label="操作" width="260" align="center">
-          <TipButton type="success" icon="el-icon-plus" tipText="添加" />
-          <TipButton type="primary" icon="el-icon-edit" tipText="修改" />
-          <TipButton type="info" icon="el-icon-info" tipText="查看SPU列表" />
-          <TipButton type="warning" icon="el-icon-delete" tipText="删除" />
+          <template slot-scope="{ row }">
+            <TipButton type="success" icon="el-icon-plus" tipText="添加" />
+            <TipButton @click="updateSpu(row)" type="primary" icon="el-icon-edit" tipText="修改" />
+            <TipButton type="info" icon="el-icon-info" tipText="查看SPU列表" />
+            <TipButton type="warning" icon="el-icon-delete" tipText="删除" />
+          </template>
         </el-table-column>
       </el-table>
 
@@ -47,7 +44,12 @@
     </el-card>
 
     <el-card v-show="!isShowSpuList" style="margin-top: 20px">
-      <SpuForm />
+      <SpuForm
+        :category3Id="category3Id"
+        :isShowSpuList.sync="isShowSpuList"
+        @setSpuList="setSpuList"
+        ref="spuForm"
+      />
     </el-card>
   </div>
 </template>
@@ -67,12 +69,12 @@ export default {
       pager: {
         currentPage: 1,
         pageSize: 2,
-        total: 10,
+        total: 0,
       },
       category1Id: '',
       category2Id: '',
       category3Id: '',
-      isShowSpuList: false, // 是否展示Spu列表
+      isShowSpuList: true, // 是否展示Spu列表
       spuList: [], // SPU数据列表
     };
   },
@@ -112,6 +114,21 @@ export default {
     handleCurrentChange(currentPage) {
       this.pager.currentPage = currentPage;
       this.setSpuList();
+    },
+
+    // 显示 SpuForm 组件
+    showSpuForm() {
+      this.isShowSpuList = false;
+
+      // category3Id
+      this.$refs.spuForm.spuForm.category3Id = this.category3Id;
+      // 设置 trademarkList、saleAttrList
+      this.$refs.spuForm.setTmAndAttrList();
+    },
+
+    updateSpu(row) {
+      this.isShowSpuList = false;
+      this.$refs.spuForm.initUpdateSpuForm(row.id);
     },
   },
   watch: {
