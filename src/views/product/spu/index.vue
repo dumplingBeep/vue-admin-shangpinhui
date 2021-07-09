@@ -22,7 +22,12 @@
         <el-table-column prop="description" label="SPU描述"></el-table-column>
         <el-table-column prop="name" label="操作" width="260" align="center">
           <template slot-scope="{ row }">
-            <TipButton type="success" icon="el-icon-plus" tipText="添加" />
+            <TipButton
+              @click="showSkuForm(row)"
+              type="success"
+              icon="el-icon-plus"
+              tipText="添加"
+            />
             <TipButton @click="updateSpu(row)" type="primary" icon="el-icon-edit" tipText="修改" />
             <TipButton type="info" icon="el-icon-info" tipText="查看SPU列表" />
             <TipButton type="warning" icon="el-icon-delete" tipText="删除" />
@@ -53,7 +58,13 @@
     </el-card>
 
     <el-card v-show="isShowSkuForm" style="margin-top: 20px">
-      <SkuForm :isShowSkuForm.sync="isShowSkuForm" />
+      <SkuForm
+        :isShowSkuForm.sync="isShowSkuForm"
+        ref="skuForm"
+        :category1Id="category1Id"
+        :category2Id="category2Id"
+        :category3Id="category3Id"
+      />
     </el-card>
   </div>
 </template>
@@ -81,7 +92,6 @@ export default {
       category2Id: '',
       category3Id: '',
       spuList: [], // SPU数据列表
-      // isShowSpuList: true, // 是否展示Spu列表
       isShowSkuForm: false,
       isShowSpuForm: false,
     };
@@ -134,9 +144,24 @@ export default {
       this.$refs.spuForm.setTmAndAttrList();
     },
 
+    // 显示 SpuForm
     updateSpu(row) {
       this.isShowSpuForm = true;
       this.$refs.spuForm.initUpdateSpuForm(row.id);
+    },
+
+    // 显示 SKuForm
+    showSkuForm({ id, tmId, spuName }) {
+      // 传递数据
+      this.$refs.skuForm.spuForm = {
+        id,
+        tmId,
+        spuName,
+      };
+
+      // 展示 SkuForm
+      this.isShowSkuForm = true;
+      this.$refs.skuForm.initSkuForm();
     },
   },
   computed: {

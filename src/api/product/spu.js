@@ -34,4 +34,9 @@ export default {
   getSpuImageList(spuId) {
     return request.get(`/admin/product/spuImageList/${spuId}`);
   },
+
+  // GET /admin/product/spuSaleAttrList/{spuId}
+  reqGetSpuSaleAttrList(spuId) {
+    return request.get(`/admin/product/spuSaleAttrList/${spuId}`);
+  },
 };
