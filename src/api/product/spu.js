@@ -39,4 +39,11 @@ export default {
   reqGetSpuSaleAttrList(spuId) {
     return request.get(`/admin/product/spuSaleAttrList/${spuId}`);
   },
+
+  /* 
+  DELETE /admin/product/deleteSpu/{spuId}
+  */
+  reqRemoveSpu(spuId) {
+    return request.delete(`/admin/product/deleteSpu/${spuId}`);
+  },
 };

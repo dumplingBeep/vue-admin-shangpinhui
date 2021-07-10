@@ -113,6 +113,7 @@ export default {
   },
   data() {
     return {
+      isAddSpu: false,
       // SPU表单数据
       spuForm: {
         category3Id: 0,
@@ -287,6 +288,8 @@ export default {
         // 保存成功展示 SpuList
         this.$emit('update:isShowSpuForm', false);
 
+        // 如果是添加的话则展示第一页
+        this.isAddSpu && this.$emit('update:currentPages', 1);
         // 更新父组件 spuList
         this.$emit('setSpuList');
 
