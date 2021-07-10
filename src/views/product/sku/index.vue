@@ -45,7 +45,7 @@
               icon="el-icon-info"
               type="info"
             />
-            <TipButton tipText="删除" icon="el-icon-delete" type="danger" />
+            <TipButton @click="deleteSku(row)" tipText="删除" icon="el-icon-delete" type="danger" />
           </template>
         </el-table-column>
       </el-table>
@@ -237,6 +237,35 @@ export default {
       this.isShowDetail = false;
       // 清空数据
       this.skuDetailInfo = {};
+    },
+
+    // 删除SKU
+    deleteSku({ id, skuName }) {
+      // 确认框
+      this.$confirm(`此操作将永久删除"${skuName}"SKU, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(async () => {
+          // 根据 id 删除SKU(发送请求)
+          await this.$API.sku.reqDeleteSku(id);
+
+          // 更新页面
+          this.setProductList();
+
+          // 提示
+          this.$message({
+            type: 'success',
+            message: '删除成功!',
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          });
+        });
     },
   },
 };
