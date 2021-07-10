@@ -24,4 +24,10 @@ export default {
       url: `/admin/product/cancelSale/${skuId}`,
     });
   },
+
+  // POST /admin/product/saveSkuInfo
+  // POST /admin/product/updateSkuInfo
+  reqAddOrUpdate(skuInfo) {
+    return request.post(`/admin/product/${skuInfo.id ? 'update' : 'save'}SkuInfo`, skuInfo);
+  },
 };
