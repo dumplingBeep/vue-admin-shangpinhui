@@ -161,7 +161,8 @@ export default {
     // 设置sku默认img
     setSkuDefaultImg(row) {
       // 设为默认，选中该项
-      this.$refs.multipleTable.toggleRowSelection(row);
+      this.$refs.multipleTable.toggleRowSelection(row, true);
+      // this.$refs.multipleTable.selec
       this.skuDefaultImg = row.imgUrl;
       // 添加响应式属性
       this.$set(row, 'isDefault', '1');
