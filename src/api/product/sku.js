@@ -30,4 +30,17 @@ export default {
   reqAddOrUpdate(skuInfo) {
     return request.post(`/admin/product/${skuInfo.id ? 'update' : 'save'}SkuInfo`, skuInfo);
   },
+
+  // GET /admin/product/findBySpuId/{spuId}
+  reqGetSkuList(spuId) {
+    return request.get(`/admin/product/findBySpuId/${spuId}`);
+  },
+
+  /* 
+  根据SKU的id查询SKU的详细信息
+  GET /admin/product/getSkuById/{skuId}
+  */
+  reqGetSkuDetail(skuId) {
+    return request.get(`/admin/product/getSkuById/${skuId}`);
+  },
 };

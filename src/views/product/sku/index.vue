@@ -39,7 +39,12 @@
               icon="el-icon-edit"
               type="primary"
             />
-            <TipButton tipText="查看详情" icon="el-icon-info" type="info" />
+            <TipButton
+              @click="viewDetail(row.id)"
+              tipText="查看详情"
+              icon="el-icon-info"
+              type="info"
+            />
             <TipButton tipText="删除" icon="el-icon-delete" type="danger" />
           </template>
         </el-table-column>
@@ -56,6 +61,63 @@
         :total="total"
         style="text-align: center; margin: 20px 0"
       ></el-pagination>
+
+      <!-- SKU 详情 -->
+      <el-drawer
+        title="SKU 详情"
+        :before-close="closeDetail"
+        :visible.sync="isShowDetail"
+        size="50%"
+      >
+        <el-row>
+          <el-col :span="5">名称</el-col>
+          <el-col :span="19">
+            {{ skuDetailInfo.skuName }}
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="5">描述</el-col>
+          <el-col :span="19">
+            {{ skuDetailInfo.skuDesc }}
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="5">价格</el-col>
+          <el-col :span="19">
+            {{ skuDetailInfo.price }}
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="5">平台属性</el-col>
+          <el-col :span="19">
+            <el-tag
+              v-for="skuAttrValue in skuDetailInfo.skuAttrValueList"
+              :key="skuAttrValue.id"
+              type="success"
+              style="margin-right:10px"
+            >
+              {{ `${skuAttrValue.attrId}-${skuAttrValue.valueId}` }}
+            </el-tag>
+          </el-col>
+        </el-row>
+
+        <!-- 图片轮播 -->
+        <el-row>
+          <el-col :span="5">商品图片</el-col>
+          <el-col :span="19">
+            <el-carousel indicator-position="outside" height="400px" style="margin-top:20px">
+              <el-carousel-item v-for="skuImage in skuDetailInfo.skuImageList" :key="skuImage.id">
+                <img
+                  :src="skuImage.imgUrl"
+                  :alt="skuImage.imgName"
+                  style="width: 400px;height: 400px;display:block;margin: 0 auto"
+                />
+              </el-carousel-item>
+            </el-carousel>
+          </el-col>
+        </el-row>
+      </el-drawer>
     </el-card>
   </div>
 </template>
@@ -70,6 +132,15 @@ export default {
       pageSize: 10,
       total: 0,
       loading: false,
+
+      isShowDetail: false,
+      skuDetailInfo: {
+        skuAttrValueList: [],
+        skuImageList: [],
+        price: '',
+        skuName: '',
+        skuDesc: '',
+      },
     };
   },
   mounted() {
@@ -140,6 +211,33 @@ export default {
         this.$message.error(`亲,${isSale ? '下架' : '上架'}失败`);
       }
     },
+
+    // 查看sku详情
+    async viewDetail(id) {
+      // 获取商品详情(发送请求)
+      const {
+        data: { skuAttrValueList, skuImageList, price, skuName, skuDesc },
+      } = await this.$API.sku.reqGetSkuDetail(id);
+
+      // 显示详情组件
+      this.isShowDetail = true;
+
+      this.skuDetailInfo = {
+        skuAttrValueList,
+        skuImageList,
+        price,
+        skuName,
+        skuDesc,
+      };
+    },
+
+    // 关闭detail页面
+    closeDetail() {
+      // 隐藏详情组件
+      this.isShowDetail = false;
+      // 清空数据
+      this.skuDetailInfo = {};
+    },
   },
 };
 </script>
@@ -147,5 +245,24 @@ export default {
 <style lang="scss" scoped>
 .sku-wraper {
   margin-top: 20px;
+}
+
+.el-row {
+  height: 40px;
+
+  .el-col:nth-child(1) {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: right;
+  }
+
+  .el-col:nth-child(2) {
+    padding-left: 20px;
+    width: 66.66667%;
+  }
+}
+
+.el-col {
+  line-height: 40px;
 }
 </style>
