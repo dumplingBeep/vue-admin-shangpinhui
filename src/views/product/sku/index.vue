@@ -2,6 +2,24 @@
   <div class="sku-wraper">
     <!-- sku数据展示 -->
     <el-card>
+      <el-form
+        label-width="60px"
+        style="margin-top: 20px;margin-bottom:30px"
+        @submit.native.prevent
+      >
+        <el-form-item label="搜索">
+          <el-input
+            placeholder="请输入搜索关键字"
+            v-model="searchKeyword"
+            style="width: 40%"
+            @input="search"
+          >
+            <i slot="prefix" class="el-input__icon el-icon-search"></i>
+          </el-input>
+        </el-form-item>
+      </el-form>
+
+      <!-- sku列表 -->
       <el-table v-loading="loading" border :data="productList" style="width: 100%">
         <el-table-column type="index" label="序号" width="80" align="center"></el-table-column>
         <el-table-column prop="skuName" type="name" label="名称"></el-table-column>
@@ -52,6 +70,7 @@
 
       <!-- 分页器 -->
       <el-pagination
+        v-show="!searchKeyword"
         @current-change="handleCurrentChange"
         @size-change="handleSizeChange"
         :current-page="currentPage"
@@ -62,6 +81,9 @@
         style="text-align: center; margin: 20px 0"
       ></el-pagination>
 
+      <div v-show="searchKeyword" class="total-wraper">
+        <span class="el-pagination__total">Total {{ productList.length }}</span>
+      </div>
       <!-- SKU 详情 -->
       <el-drawer
         title="SKU 详情"
@@ -88,6 +110,7 @@
           </el-col>
         </el-row>
 
+        <!-- 平台属性 -->
         <el-row>
           <el-col :span="5">平台属性</el-col>
           <el-col :span="19">
@@ -123,6 +146,8 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce';
+
 export default {
   name: 'SKU',
   data() {
@@ -141,6 +166,8 @@ export default {
         skuName: '',
         skuDesc: '',
       },
+
+      searchKeyword: '',
     };
   },
   mounted() {
@@ -267,6 +294,32 @@ export default {
           });
         });
     },
+
+    // 防抖优化
+    getRemote: debounce(async function() {
+      this.loading = true;
+      try {
+        // 查询关键字(发送请求)
+        const res = await this.$API.sku.reqSearchSku(this.searchKeyword);
+        this.productList = res;
+        this.loading = false;
+      } catch (error) {
+        this.$message.error('亲,出现错误,请联系管理员~');
+      }
+    }, 600),
+
+    // 模糊查询
+    search() {
+      const { searchKeyword } = this;
+
+      // 判断是否为空, 为空获得所有数据
+      if (!searchKeyword.trim()) {
+        this.setProductList();
+        return;
+      }
+
+      this.getRemote();
+    },
   },
 };
 </script>
@@ -274,6 +327,10 @@ export default {
 <style lang="scss" scoped>
 .sku-wraper {
   margin-top: 20px;
+}
+
+.search {
+  width: 40%;
 }
 
 .el-row {
@@ -293,5 +350,10 @@ export default {
 
 .el-col {
   line-height: 40px;
+}
+
+.total-wraper {
+  text-align: right;
+  padding: 30px 20px 20px;
 }
 </style>

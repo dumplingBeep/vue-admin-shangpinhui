@@ -48,4 +48,9 @@ export default {
   reqDeleteSku(skuId) {
     return request.delete(`/admin/product/deleteSku/${skuId}`);
   },
+
+  // GET /admin/product/inner/findSkuInfoByKeyword/{keyword}
+  reqSearchSku(keyword) {
+    return request.get(`/admin/product/inner/findSkuInfoByKeyword/${keyword}`);
+  },
 };
