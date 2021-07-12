@@ -300,7 +300,7 @@ export default {
       this.loading = true;
       try {
         // 查询关键字(发送请求)
-        const res = await this.$API.sku.reqSearchSku(this.searchKeyword);
+        const res = await this.$API.sku.reqSearchSku(this.searchKeyword.trim() || '');
         this.productList = res;
         this.loading = false;
       } catch (error) {
@@ -309,17 +309,26 @@ export default {
     }, 600),
 
     // 模糊查询
-    search() {
-      const { searchKeyword } = this;
-
+    search: debounce(async function() {
+      let { searchKeyword } = this;
+      searchKeyword = searchKeyword.trim();
       // 判断是否为空, 为空获得所有数据
-      if (!searchKeyword.trim()) {
+      if (!searchKeyword) {
         this.setProductList();
         return;
       }
 
-      this.getRemote();
-    },
+      this.loading = true;
+      try {
+        // 查询关键字(发送请求)
+        this.productList = await this.$API.sku.reqSearchSku(searchKeyword);
+
+        this.loading = false;
+      } catch (error) {
+        this.$message.error('亲,出现错误,请联系管理员~');
+        this.loading = false;
+      }
+    }, 600),
   },
 };
 </script>
