@@ -97,7 +97,7 @@
               type="success"
               style="margin-right:10px"
             >
-              {{ `${skuAttrValue.attrId}-${skuAttrValue.valueId}` }}
+              {{ `${skuAttrValue.attrName}: ${skuAttrValue.valueName}` }}
             </el-tag>
           </el-col>
         </el-row>
