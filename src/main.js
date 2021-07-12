@@ -17,6 +17,7 @@ import TipButton from '@/components/TipButton';
 
 import '@/icons'; // icon
 import '@/permission'; // permission control
+import '@/plugins/vcharts';
 
 /**
  * If you don't want to use mock-server
