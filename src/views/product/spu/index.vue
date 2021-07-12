@@ -58,7 +58,7 @@
       ></el-pagination>
 
       <!-- spuList -->
-      <el-dialog :title="`${skuInfo.spuName} => SKU列表`" :visible.sync="isShowSkuList" width="30%">
+      <el-dialog :title="`SKU列表: ${skuInfo.spuName}`" :visible.sync="isShowSkuList" width="30%">
         <el-table :data="skuInfo.skuInfoList" border style="width: 100%">
           <el-table-column prop="skuName" label="名称" align="center"></el-table-column>
           <el-table-column prop="price" label="价格(元)" align="center"></el-table-column>
