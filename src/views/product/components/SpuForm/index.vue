@@ -274,6 +274,16 @@ export default {
 
     // 保存
     async save() {
+      // 判断已添加的销售属性,是否没有添加属性值
+      const notHaveAttr = this.spuForm.spuSaleAttrList.some(
+        (spuSaleAttr) => !spuSaleAttr.spuSaleAttrValueList.length
+      );
+      // 提示并退出函数
+      if (notHaveAttr) {
+        this.$message('亲,添加属性值~');
+        return;
+      }
+
       try {
         this.spuForm.category3Id = this.category3Id;
         this.spuForm.spuImageList = this.spuImageList;
