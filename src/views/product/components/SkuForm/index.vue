@@ -207,15 +207,12 @@ export default {
       }, []);
 
       // 处理图片列表
-      skuForm.skuImageList = skuForm.skuImageList.reduce((p, spuSaleAttr) => {
-        p.push({
-          imgName: spuSaleAttr.imgName,
-          imgUrl: spuSaleAttr.imgUrl,
-          spuImgId: spuSaleAttr.spuId,
-          isDefault: spuSaleAttr.isDefault || '0',
-        });
-        return p;
-      }, []);
+      skuForm.skuImageList = skuForm.skuImageList.map((spuSaleAttr) => ({
+        imgName: spuSaleAttr.imgName,
+        imgUrl: spuSaleAttr.imgUrl,
+        spuImgId: spuSaleAttr.id,
+        isDefault: spuSaleAttr.isDefault,
+      }));
 
       // 其他数据
       skuForm.category3Id = this.category3Id;
@@ -229,6 +226,9 @@ export default {
 
         // 显示 SpuList
         this.$emit('update:isShowSkuForm', false);
+
+        // 清空数据
+        Object.assign(this.$data, this.$options.data());
 
         // 提示信息
         this.$message({
