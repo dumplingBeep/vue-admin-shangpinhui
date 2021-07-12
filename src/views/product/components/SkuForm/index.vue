@@ -155,6 +155,7 @@ export default {
     // 设置 Spu 销售属性列表
     async setSkuImageList() {
       const { data } = await this.$API.spu.getSpuImageList(this.spuForm.id);
+      data.forEach((skuImage) => (skuImage.isDefault = '0'));
       this.skuImageList = data;
     },
 
@@ -164,8 +165,12 @@ export default {
       this.$refs.multipleTable.toggleRowSelection(row, true);
       // this.$refs.multipleTable.selec
       this.skuDefaultImg = row.imgUrl;
+
+      // 去除其他图片默认状态
+      this.skuImageList.forEach((skuImage) => (skuImage.isDefault = '0'));
+
       // 添加响应式属性
-      this.$set(row, 'isDefault', '1');
+      row.isDefault = '1';
     },
 
     // 保存选中图片
@@ -239,16 +244,6 @@ export default {
     cancel() {
       Object.assign(this.$data, this.$options.data());
       this.$emit('update:isShowSkuForm', false);
-    },
-  },
-  watch: {
-    skuDefaultImg(newVal) {
-      // 去除其他图片默认状态
-      this.skuImageList.forEach((skuImage) => {
-        if (skuImage.imgUrl !== newVal) {
-          skuImage.isDefault = '0';
-        }
-      });
     },
   },
 };
