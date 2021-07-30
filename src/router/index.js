@@ -60,6 +60,7 @@ export const constantRoutes = [
     {
         path: '/product',
         component: Layout,
+        redirect: '/product/brand',
         meta: { title: '商品管理', icon: 'el-icon-s-shop' },
         children: [
             {
