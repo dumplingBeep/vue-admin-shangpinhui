@@ -134,6 +134,14 @@ npm run lint -- --fix
 >   - 监视三级分类选择器
 >     - 调用*setList*传入category3Id
 >     - *$emit*更新父组件传入的*category3Id*
+>
+> ### TipButton 提示按钮
+>
+> - 外层*el-tooltip*
+>   - 接收*props*传递*tipTitle*设置按钮提示标题
+> - 包裹*el-button*
+>   - 以*v-bind="$attrs"*将其他参数设置到*el-button*
+>   - 以*v-on="$listeners"*将所有(不含 *.native* 修饰器的)*v-on* 事件绑定在*el-button*
 
 ## SPU管理
 

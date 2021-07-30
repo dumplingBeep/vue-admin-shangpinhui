@@ -20,10 +20,10 @@
                 <el-table-column label="SPU名称" prop="spuName"></el-table-column>
                 <el-table-column label="SPU描述" prop="description"></el-table-column>
                 <el-table-column label="操作" align="center" width="260">
-                    <el-button type="success" size="mini" icon="el-icon-plus"></el-button>
-                    <el-button type="primary" size="mini" icon="el-icon-edit"></el-button>
-                    <el-button type="info" size="mini" icon="el-icon-info"></el-button>
-                    <el-button type="danger" size="mini" icon="el-icon-delete"></el-button>
+                    <TipButton type="success" size="mini" icon="el-icon-plus" tipTitle="添加SKU" />
+                    <TipButton type="primary" size="mini" icon="el-icon-edit" tipTitle="修改SPU" />
+                    <TipButton type="info" size="mini" icon="el-icon-info" tipTitle="查看SPU" />
+                    <TipButton type="danger" size="mini" icon="el-icon-delete" tipTitle="删除SPU" />
                 </el-table-column>
             </el-table>
 
@@ -48,14 +48,8 @@
 </template>
 
 <script>
-import CategorySelector from '@/components/CategorySelector';
-import { trickle } from 'nprogress';
-
 export default {
     name: 'Spu',
-    components: {
-        CategorySelector,
-    },
     data() {
         return {
             // loading 状态

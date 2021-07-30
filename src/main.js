@@ -18,6 +18,12 @@ import '@/permission'; // permission control
 import * as API from '@/api';
 Vue.prototype.$API = API;
 
+// 注册全局组件
+import CategorySelector from '@/components/CategorySelector';
+import TipButton from '@/components/TipButton';
+Vue.component('CategorySelector', CategorySelector);
+Vue.component('TipButton', TipButton);
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
