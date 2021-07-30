@@ -51,3 +51,15 @@ npm run lint
 # code format check and auto fix
 npm run lint -- --fix
 ```
+
+## 登录
+
+> ### 表单校验
+>
+> element-ui库自定义表单校验
+>
+> - 用户名
+>   - 限制用户名只能是*admin*或者*editor*
+>
+> - 密码
+>   - 限制密码长度至少6位
