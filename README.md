@@ -113,6 +113,9 @@ npm run lint -- --fix
 >   - 内容层*el-form* + *el-form-item*
 >   - 选择器*el-select*
 > - 三级分类联动
+>   - 父组件以*props*方式传递参数
+>     - *sync*修饰符传递的*category3Id*: 在组件内使其父组件的*category3Id*的值保持一致
+>     - 接收传递的函数*setList*: 用于更新父组件将要渲染的列表数据
 >   - 定义API
 >     - 一级分类
 >     - 二级分类，需要一级分类id
@@ -128,12 +131,17 @@ npm run lint -- --fix
 >     - 发送改变请求三级分类数据
 >     - 初始化数据
 >       - 清空三级分类id
+>   - 监视三级分类选择器
+>     - 调用*setList*传入category3Id
+>     - *$emit*更新父组件传入的*category3Id*
 
 ## SPU管理
 
 > ### SPU首页静态搭建
 >
 > - 公共组件 *CategorySelector* 分类选择器
+>   - 使用*sync*修饰符传递*category3Id*: 在组件内使其父组件的*category3Id*的值保持一致
+>   - 传递函数*setList*: 用于更新父组件将要渲染的列表数据
 > - *el-table* 展示SPU列表
 >   - 公共组件 *TipButton* 操作按钮
 > - *el-pagination* 分页器

@@ -40,6 +40,11 @@
 <script>
 export default {
     name: 'CategorySelector',
+    props: {
+        setList: {
+            type: Function,
+        },
+    },
     data() {
         return {
             category1Id: '',
@@ -95,6 +100,13 @@ export default {
 
             // 初始化
             this.category3Id = '';
+        },
+
+        category3Id(newVal) {
+            // 修改父组件 category3Id
+            this.$emit('update:category3Id', newVal);
+
+            this.setList(this.category3Id);
         },
     },
 };
