@@ -145,7 +145,9 @@ npm run lint -- --fix
 
 ## SPU管理
 
-> ### SPU首页静态搭建
+> ### SPU首页
+>
+> #### 静态搭建
 >
 > - 公共组件 *CategorySelector* 分类选择器
 >   - 使用*sync*修饰符传递*category3Id*: 在组件内使其父组件的*category3Id*的值保持一致
@@ -153,4 +155,8 @@ npm run lint -- --fix
 > - *el-table* 展示SPU列表
 >   - 公共组件 *TipButton* 操作按钮
 > - *el-pagination* 分页器
+>
+> #### API
+>
+> - 分页查询*SPU*列表，所需参数*page*、*limit*
 >

@@ -28,12 +28,9 @@
             </el-table>
 
             <!-- 分页器 -->
-            <!-- 
-                @size-change="sizeChange"
-                @current-change="currentChange"
-                :current-page.sync="currentPage"
-             -->
             <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
                 :current-page="pager.currentPage"
                 :page-sizes="[2, 4, 8, 10]"
                 :page-size="pager.limit"
@@ -72,8 +69,8 @@ export default {
         };
     },
     methods: {
-        // 设置 spu 列表
-        async setSpuList(id) {
+        // 设置 spu 列表(发送请求)
+        async setSpuList() {
             const {
                 pager: { currentPage: page, limit },
                 category3Id,
@@ -93,6 +90,27 @@ export default {
             // 更新数据
             this.pager.total = total;
             this.spuList = records;
+        },
+
+        // 处理分页器每页条数发送改变
+        handleSizeChange(pageSize) {
+            // 更新数据
+            this.pager.limit = pageSize;
+
+            // category3Id 为空则不发送请求
+            if (!this.category3Id) return;
+
+            // 更新 spu 列表(发送请求)
+            this.setSpuList();
+        },
+
+        // 处理分页器当前页数发送改变
+        handleCurrentChange(currentPage) {
+            // 更新数据
+            this.pager.currentPage = currentPage;
+
+            // 更新 spu 列表(发送请求)
+            this.setSpuList();
         },
     },
 };
