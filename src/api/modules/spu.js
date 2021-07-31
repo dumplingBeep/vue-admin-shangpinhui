@@ -9,4 +9,14 @@ export default {
             },
         });
     },
+
+    // GET /admin/product/getSpuById/{spuId}
+    getSpuById(spuId) {
+        return request.get(`/admin/product/getSpuById/${spuId}`);
+    },
+
+    // GET /admin/product/spuImageList/{spuId}
+    getSpuImageList(spuId) {
+        return request.get(`/admin/product/spuImageList/${spuId}`);
+    },
 };

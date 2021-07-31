@@ -4,7 +4,7 @@
         <CategorySelector :category3Id.sync="category3Id" :setList="setSpuList" />
 
         <!-- SPU -->
-        <el-card shadow="always" style="margin-top:20px">
+        <el-card v-show="!isShowSpuForm" shadow="always" style="margin-top:20px">
             <el-button :disabled="!category3Id" type="primary" size="default" icon="el-icon-plus">
                 添加SPU
             </el-button>
@@ -20,10 +20,28 @@
                 <el-table-column label="SPU名称" prop="spuName"></el-table-column>
                 <el-table-column label="SPU描述" prop="description"></el-table-column>
                 <el-table-column label="操作" align="center" width="260">
-                    <TipButton type="success" size="mini" icon="el-icon-plus" tipTitle="添加SKU" />
-                    <TipButton type="primary" size="mini" icon="el-icon-edit" tipTitle="修改SPU" />
-                    <TipButton type="info" size="mini" icon="el-icon-info" tipTitle="查看SPU" />
-                    <TipButton type="danger" size="mini" icon="el-icon-delete" tipTitle="删除SPU" />
+                    <template v-slot="{ row }">
+                        <TipButton
+                            type="success"
+                            size="mini"
+                            icon="el-icon-plus"
+                            tipTitle="添加SKU"
+                        />
+                        <TipButton
+                            @click="updateSpu(row)"
+                            type="primary"
+                            size="mini"
+                            icon="el-icon-edit"
+                            tipTitle="修改SPU"
+                        />
+                        <TipButton type="info" size="mini" icon="el-icon-info" tipTitle="查看SPU" />
+                        <TipButton
+                            type="danger"
+                            size="mini"
+                            icon="el-icon-delete"
+                            tipTitle="删除SPU"
+                        />
+                    </template>
                 </el-table-column>
             </el-table>
 
@@ -41,12 +59,20 @@
                 :pager-count="7">
             </el-pagination>
         </el-card>
+
+        <!-- SpuForm -->
+        <SpuForm v-show="isShowSpuForm" ref="spuForm" />
     </main>
 </template>
 
 <script>
+import SpuForm from './components/SpuForm';
+
 export default {
     name: 'Spu',
+    components: {
+        SpuForm,
+    },
     data() {
         return {
             // loading 状态
@@ -66,6 +92,9 @@ export default {
                 total: 0,
                 limit: 4,
             },
+
+            // spuForm是否显示
+            isShowSpuForm: false,
         };
     },
     methods: {
@@ -111,6 +140,17 @@ export default {
 
             // 更新 spu 列表(发送请求)
             this.setSpuList();
+        },
+
+        // 修改spu
+        updateSpu({ id }) {
+            const { spuForm } = this.$refs;
+            // 初始化 spuForm 数据
+            spuForm.spuId = id;
+            spuForm.initSpuForm();
+
+            // 显示 SpuForm 组件
+            this.isShowSpuForm = true;
         },
     },
 };
