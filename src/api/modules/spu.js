@@ -19,4 +19,15 @@ export default {
     getSpuImageList(spuId) {
         return request.get(`/admin/product/spuImageList/${spuId}`);
     },
+
+    // GET /admin/product/baseSaleAttrList
+    getBaseSaleAttrList(spuId) {
+        return request.get('/admin/product/baseSaleAttrList');
+    },
+
+    // POST /admin/product/updateSpuInfo
+    // POST /admin/product/saveSpuInfo
+    saveSpuFormData(data) {
+        return request.post(`/admin/product/${data.id ? 'update' : 'save'}SpuInfo`, data);
+    },
 };

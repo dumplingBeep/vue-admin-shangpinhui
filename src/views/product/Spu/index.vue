@@ -61,7 +61,12 @@
         </el-card>
 
         <!-- SpuForm -->
-        <SpuForm v-show="isShowSpuForm" ref="spuForm" />
+        <SpuForm
+            v-show="isShowSpuForm"
+            :isShowSpuForm.sync="isShowSpuForm"
+            ref="spuForm"
+            :setSpuList="setSpuList"
+        />
     </main>
 </template>
 
