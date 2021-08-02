@@ -4,6 +4,8 @@
         <CategorySelector
             :isDisabled="isShowSpuList"
             :category3Id.sync="category3Id"
+            :category2Id.sync="category2Id"
+            :category1Id.sync="category1Id"
             :setList="setSpuList"
         />
 
@@ -32,6 +34,7 @@
                 <el-table-column label="操作" align="center" width="260">
                     <template v-slot="{ row }">
                         <TipButton
+                            @click="addSku(row)"
                             type="success"
                             size="mini"
                             icon="el-icon-plus"
@@ -77,7 +80,7 @@
         />
 
         <!-- SkuForm -->
-        <SkuForm v-show="isShowSkuForm" />
+        <SkuForm v-show="isShowSkuForm" :isShowSkuForm.sync="isShowSkuForm" ref="skuForm" />
     </main>
 </template>
 
@@ -179,6 +182,26 @@ export default {
 
             // 显示 SpuForm 组件
             this.isShowSpuForm = true;
+        },
+
+        // 添加 SKU
+        addSku({ id, spuName, tmId }) {
+            // 获取 SkuForm 组件实例
+            const { skuForm } = this.$refs;
+
+            // 初始化数据
+            skuForm.spuName = spuName;
+            skuForm.skuForm.spuId = id;
+
+            // 获取平台属性所需参数
+            const { category1Id, category2Id, category3Id } = this;
+            skuForm.category = { category1Id, category2Id, category3Id };
+            skuForm.skuForm.tmId = tmId;
+
+            skuForm.initSkuForm();
+
+            // 显示 SkuForm
+            this.isShowSkuForm = true;
         },
     },
 

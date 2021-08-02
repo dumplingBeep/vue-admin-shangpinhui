@@ -85,9 +85,12 @@ export default {
         },
     },
     watch: {
-        category1Id() {
+        category1Id(newVal) {
             // 获取二级分类（发送请求）
             this.setCategory2List();
+
+            // 修改父组件 category1Id
+            this.$emit('update:category1Id', newVal);
 
             // 初始化
             this.category2Id = '';
@@ -95,11 +98,14 @@ export default {
             this.category3List = [];
         },
 
-        category2Id(nawVal) {
-            if (!nawVal) return;
+        category2Id(newVal) {
+            if (!newVal) return;
 
             // 获取三级分类（发送请求）
             this.setCategory3List();
+
+            // 修改父组件 category2Id
+            this.$emit('update:category2Id', newVal);
 
             // 初始化
             this.category3Id = '';
