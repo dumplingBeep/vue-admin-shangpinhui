@@ -1,6 +1,6 @@
 <template>
     <el-card>
-        <el-form :inline="true" class="demo-form-inline">
+        <el-form :disabled="!isDisabled" :inline="true" class="demo-form-inline">
             <el-form-item label="一级分类">
                 <el-select v-model="category1Id" placeholder="请选择">
                     <el-option
@@ -43,6 +43,9 @@ export default {
     props: {
         setList: {
             type: Function,
+        },
+        isDisabled: {
+            type: Boolean,
         },
     },
     data() {

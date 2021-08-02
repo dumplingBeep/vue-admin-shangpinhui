@@ -1,10 +1,14 @@
 <template>
     <main class="spu-container">
         <!-- 分类 -->
-        <CategorySelector :category3Id.sync="category3Id" :setList="setSpuList" />
+        <CategorySelector
+            :isDisabled="isShowSpuList"
+            :category3Id.sync="category3Id"
+            :setList="setSpuList"
+        />
 
         <!-- SPU -->
-        <el-card v-show="!isShowSpuForm" shadow="always" style="margin-top:20px">
+        <el-card v-show="isShowSpuList" shadow="always" style="margin-top:20px">
             <el-button
                 @click="addSpu"
                 :disabled="!category3Id"
@@ -71,16 +75,21 @@
             ref="spuForm"
             :setSpuList="setSpuList"
         />
+
+        <!-- SkuForm -->
+        <SkuForm v-show="isShowSkuForm" />
     </main>
 </template>
 
 <script>
 import SpuForm from './components/SpuForm';
+import SkuForm from './components/SkuForm';
 
 export default {
     name: 'Spu',
     components: {
         SpuForm,
+        SkuForm,
     },
     data() {
         return {
@@ -104,6 +113,8 @@ export default {
 
             // spuForm是否显示
             isShowSpuForm: false,
+            // skuForm是否显示
+            isShowSkuForm: false,
         };
     },
     methods: {
@@ -168,6 +179,14 @@ export default {
 
             // 显示 SpuForm 组件
             this.isShowSpuForm = true;
+        },
+    },
+
+    computed: {
+        // 控制 Spu 首页是否显示
+        isShowSpuList() {
+            const { isShowSpuForm, isShowSkuForm } = this;
+            return !isShowSpuForm && !isShowSkuForm;
         },
     },
 };
