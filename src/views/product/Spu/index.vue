@@ -5,7 +5,13 @@
 
         <!-- SPU -->
         <el-card v-show="!isShowSpuForm" shadow="always" style="margin-top:20px">
-            <el-button :disabled="!category3Id" type="primary" size="default" icon="el-icon-plus">
+            <el-button
+                @click="addSpu"
+                :disabled="!category3Id"
+                type="primary"
+                size="default"
+                icon="el-icon-plus"
+            >
                 添加SPU
             </el-button>
 
@@ -55,9 +61,7 @@
                 layout="prev, pager, next, jumper, ->, sizes, total"
                 :total="pager.total"
                 style="text-align: center; margin: 20px"
-            >
-                :pager-count="7">
-            </el-pagination>
+            ></el-pagination>
         </el-card>
 
         <!-- SpuForm -->
@@ -147,11 +151,19 @@ export default {
             this.setSpuList();
         },
 
-        // 修改spu
+        // 修改 spu
         updateSpu({ id }) {
+            // 设置当前 spuId
+            this.$refs.spuForm.spuId = id;
+
+            this.addSpu();
+        },
+
+        // 添加 spu
+        addSpu() {
             const { spuForm } = this.$refs;
             // 初始化 spuForm 数据
-            spuForm.spuId = id;
+            spuForm.spuForm.category3Id = this.category3Id;
             spuForm.initSpuForm();
 
             // 显示 SpuForm 组件

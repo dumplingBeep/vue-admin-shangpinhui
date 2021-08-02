@@ -164,7 +164,7 @@ export default {
                 spuImageList: [],
                 spuName: '',
                 spuSaleAttrList: [],
-                tmId: 0,
+                tmId: '',
             },
 
             // 品牌列表
@@ -189,17 +189,21 @@ export default {
     methods: {
         // 初始化 SpuForm 数据
         initSpuForm() {
-            // 设置 spuForm 数据(发送请求)
-            this.setSpuFormData();
-
             // 设置商标列表(发送请求)
             this.setTrademarkList();
 
-            // 设置图片列表(发送请求)
-            this.setSpuImageList();
-
             // 设置基本销售属性列表(发送请求)
             this.setBaseSaleAttrList();
+
+            // 修改是 spuId 才有值
+            const { spuId } = this;
+            if (spuId) {
+                // 设置 spuForm 数据(发送请求)
+                this.setSpuFormData();
+
+                // 设置图片列表(发送请求)
+                this.setSpuImageList();
+            }
         },
 
         // 设置 spu 表单数据(发送请求)
